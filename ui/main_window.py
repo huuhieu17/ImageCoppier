@@ -9,7 +9,7 @@ from ui.insert_logo_page import AddLogoPage
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("File Copier Pro")
+        self.setWindowTitle("SFoto Tool")
         self.resize(1000, 600)
         self.init_ui()
 

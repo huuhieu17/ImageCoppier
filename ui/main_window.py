@@ -4,13 +4,14 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import Qt
 from ui.copy_image_page import CopyImagePage  # Trang copy ảnh
+from ui.image_edit import EditImagePage
 from ui.insert_logo_page import AddLogoPage
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("SFoto Tool")
-        self.resize(1000, 600)
+        self.resize(1000, 800)
         self.init_ui()
 
     def init_ui(self):
@@ -34,10 +35,14 @@ class MainWindow(QMainWindow):
             }
             QListWidget::item:selected {
                 background-color: #34495e;
-                font-weight: 500;
+                font-weight: 700;
+                padding: 10px;
+                border: 0;
+                font-size: 18px;
+                outline: none;
             }
         """)
-        self.sidebar.addItems(["Copy Ảnh", "Chèn logo", "Chức năng 3"])  # Thêm các chức năng
+        self.sidebar.addItems(["Copy Ảnh", "Chèn logo", "Sửa ảnh"])  # Thêm các chức năng
         self.sidebar.currentRowChanged.connect(self.change_page)  # Kết nối sự kiện chọn menu
 
         # Stacked widget để quản lý các trang
@@ -46,9 +51,10 @@ class MainWindow(QMainWindow):
         # Thêm các trang vào stacked widget
         self.copy_image_page = CopyImagePage()  # Trang copy ảnh
         self.insert_logo_page = AddLogoPage()  # Thêm trang chèn logo
+        self.edit_image_page = EditImagePage()
         self.stacked_widget.addWidget(self.copy_image_page)
         self.stacked_widget.addWidget(self.insert_logo_page)
-        self.stacked_widget.addWidget(QLabel("Chức năng 3"))  # Trang placeholder
+        self.stacked_widget.addWidget(self.edit_image_page)  # Trang placeholder
 
         # Thêm sidebar và stacked widget vào layout chính
         main_layout.addWidget(self.sidebar)

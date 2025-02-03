@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='lib/tui-image-editor.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='lib/tui-color-picker.css') }}">
+  <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+  <style type="">
+    body{
+            height: 100vh;
+            margin: 0;
+        }
+    .tui-image-editor-header-logo{
+      display: none;
+    }
+    </style>
+</head>
+
+<body>
+  <div id="tui-image-editor-container" style="height: 100vh !important; width: 90vw"></div>
+
+  <script src="{{ url_for('static', filename='lib/fabric.js') }}"></script>
+  <script src="{{ url_for('static', filename='lib/tui-color-picker.js') }}"></script>
+  <script src="{{ url_for('static', filename='lib/tui-image-editor.js') }}"></script>
+  <script src="{{ url_for('static', filename='lib/theme/white-theme.js') }}"></script>
+  <script src="{{ url_for('static', filename='lib/theme/black-theme.js') }}"></script>
+
+  <script type="text/javascript">
+    new QWebChannel(qt.webChannelTransport, function (channel) {
+      window.qtBridge = channel.objects.qtBridge;
+    });
+    // Image editor
+    var fileName = '';
+    var imageEditor = new tui.ImageEditor('#tui-image-editor-container', {
+      includeUI: {
+        theme: whiteTheme, // or whiteTheme
+        initMenu: 'filter',
+        menuBarPosition: 'left',
+      },
+      cssMinHeight: '100%',
+      usageStatistics: false,
+    });
+
+    window.onclick = function (e) {
+      const target = event.target;
+      if (target.className === 'tui-image-editor-download-btn') {
+        e.preventDefault();
+        e.stopPropagation();
+        const obj = JSON.stringify({
+          fileName,
+          data: imageEditor.toDataURL()
+        })
+        console.log()
+        window.qtBridge.chooseFolder().then((folder) => {
+          if (folder) {
+            console.log(`📂 Đã chọn thư mục: ${folder}`);
+            console.log("📤 Gửi ảnh đến Python...");
+            window.qtBridge.receiveFromJS(obj);
+          } else {
+            console.log("❌ Người dùng đã hủy chọn thư mục.");
+          }
+        });
+      }
+    }
+    window.oninput = function (e) {
+      const target = e.target;
+      const file = target.files[0];
+      if(file) {
+        fileName = file.name
+      }
+    }
+    window.onresize = function () {
+      imageEditor.ui.resizeEditor();
+    };
+
+
+  </script>
+</body>
+
+</html>

@@ -10,7 +10,7 @@ from ui.insert_logo_page import AddLogoPage
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("SFoto Tool")
+        self.setWindowTitle("SFoto Tool (1.0.1)")
         self.resize(1000, 800)
         self.init_ui()
 
